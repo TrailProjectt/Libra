@@ -1,0 +1,20 @@
+"""Fictional, date-relative sample records. No real case or personal information."""
+import datetime,base64
+
+def sample_data():
+ today=datetime.date.today()
+ date=lambda days:(today+datetime.timedelta(days=days)).isoformat()
+ data={k:[] for k in ('cases','clients','tasks','invoices','docs','appointments','evidence')}
+ names=['Aarav Sharma (Demo)','Mehta Enterprises (Demo)','Priya Verma (Demo)','Vikram Rao (Demo)','Nisha Kapoor (Demo)']
+ for i,name in enumerate(names,1):data['clients'].append(dict(id=f'demo-v4-client-{i}',name=name,email=f'client{i}@example.test',phone='Fictional contact'))
+ matters=[('Sharma vs. Horizon Developers','CS / DEMO-124',names[0],'Sample Delhi District Court',0,'Arguments','Active','Review written submissions and the sample agreement.'),('Mehta Enterprises vs. Apex Supply','COMM / DEMO-892',names[1],'Sample Delhi High Court',0,'Evidence','Active','Prepare the invoice bundle for review.'),('Verma family mediation','FC / DEMO-56',names[2],'Sample Family Court',3,'Mediation','Active','Confirm availability for the mediation session.'),('Rao vs. Apex Industries','CA / DEMO-308',names[3],'Sample Labour Court',-5,'Disposed','Closed','Fictional matter closed; archive the sample order.'),('Kapoor tenancy matter','RC / DEMO-219',names[4],'Sample Rent Tribunal',7,'Preliminary hearing','Active','Review the tenancy agreement and client notes.'),('Sharma property appeal','AP / DEMO-47',names[0],'Sample Appellate Court',-1,'Review next date','Active','Past hearing date: record the hearing and update the next date.')]
+ for i,(title,number,client,court,days,stage,status,notes) in enumerate(matters,1):
+  data['cases'].append(dict(id=f'demo-v4-case-{i}',title=title,number=number,client=client,court=court,date=date(days),stage=stage,status=status,notes=notes,history=[dict(date=date(-14),stage='Preliminary hearing',notes='Fictional sample: documents reviewed; next hearing scheduled.',nextDate=date(days))]))
+ files=[('Sample_Agreement.txt','FICTIONAL SAMPLE AGREEMENT\nThis is demo content for testing document downloads.\nNo legal effect.\n'),('Sample_Invoice_Bundle.txt','FICTIONAL INVOICE BUNDLE\nDemo invoice A: INR 12,000\nDemo invoice B: INR 8,000\n'),('Sample_Witness_Notes.txt','FICTIONAL WITNESS NOTES\nSample notes only. Not a real statement.\n'),('Sample_Order.txt','FICTIONAL SAMPLE ORDER\nDemo matter marked closed for interface testing.\n')]
+ for i,(name,text) in enumerate(files,1):
+  raw=text.encode();data['docs'].append(dict(id=f'demo-v4-doc-{i}',name=name,size=len(raw),date=date(-7),data='data:text/plain;base64,'+base64.b64encode(raw).decode()))
+ for i,(case,title,kind,doc) in enumerate([(1,'Exhibit A: sample agreement','Document',1),(2,'Exhibit B: invoice bundle','Document',2),(1,'Sample witness notes','Witness statement',3),(4,'Sample closing order','Document',4)],1):data['evidence'].append(dict(id=f'demo-v4-evidence-{i}',caseId=f'demo-v4-case-{case}',title=title,type=kind,date=date(-7),description='Fictional exhibit for exploring evidence management and downloads.',documentId=f'demo-v4-doc-{doc}'))
+ for i,(title,days,done) in enumerate([('Prepare Sharma written submissions',0,False),('Review Mehta invoice bundle',-1,False),('Confirm mediation appointment',2,False),('Draft tenancy chronology',5,False),('Archive Rao closing order',-2,True)],1):data['tasks'].append(dict(id=f'demo-v4-task-{i}',title=title,date=date(days),done=done))
+ for i,(title,days,time,location) in enumerate([('Sharma client consultation',0,'16:00','Demo chamber'),('Mediation preparation meeting',2,'11:30','Demo conference room'),('Kapoor document review',5,'15:00','Demo video consultation')],1):data['appointments'].append(dict(id=f'demo-v4-appointment-{i}',title=title,date=date(days),time=time,location=location))
+ for i,(client,desc,amount,status) in enumerate([(names[0],'Sample consultation and drafting',15000,'Unpaid'),(names[1],'Sample professional fees',28000,'Paid'),(names[2],'Sample mediation preparation',7500,'Unpaid'),(names[3],'Sample closing fees',12000,'Paid')],1):data['invoices'].append(dict(id=f'demo-v4-invoice-{i}',client=client,description=desc,amount=amount,status=status))
+ return data
